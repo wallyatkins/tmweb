@@ -1,0 +1,9 @@
+# tmweb - TroopMaster Web 2.0 Data Interface
+
+### Concepts
+
+ * Lightweight data reader/service provider
+ * Easily deployable (Heroku deploy button)
+ * Easily configurable for each troop
+ 
+More to come ...
