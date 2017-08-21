@@ -1,7 +1,11 @@
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.Map.Entry;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.NewCookie;
+import javax.ws.rs.core.Response;
 
 public class Login {
 	
@@ -56,20 +60,25 @@ public class Login {
 	**/	
 
 	// In the response of the ScoutManagement - find the DIV element with the ID of "grid"
+	
+	private static final String LOGIN_URI = "https://tmweb.troopmaster.com/Login/Login";
+	private static Client client = ClientBuilder.newClient();
 			
 	public static void main(String[] args) {
 		
-		HttpURLConnection connection = null;
-		
-		try {
-			URL login = new URL("https://tmweb.troopmaster.com/Login/Login");
-			connection = (HttpURLConnection) login.openConnection();
-			connection.setRequestMethod("POST");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		Response response = getLogin("username", "password");
+		System.out.println("Status: " + response.getStatus());
+		for (Entry<String, NewCookie> entry  : response.getCookies().entrySet()) {
+			System.out.println(entry.getKey() + ": " + entry.getValue());
 		}
-		
+	}
+	
+	public static Response getLogin(String user, String pass) {
+		return client
+				.target(LOGIN_URI)
+				.request(MediaType.APPLICATION_JSON)
+				.header("Cookie", "TroopMasterWebSiteID=202574;")
+				.post(Entity.entity("{\"UserID\":\"" + user + "\",\"Password\":\"" + pass + "\"}", MediaType.APPLICATION_JSON));
 	}
 
 }
