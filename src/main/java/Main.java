@@ -1,8 +1,11 @@
+import java.util.ArrayList;
 import java.util.Map.Entry;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
@@ -14,13 +17,16 @@ public class Main {
 	private static final String LOGIN_URI = "https://tmweb.troopmaster.com/Login/Login";
 	private static final String SCOUTS_URI = "https://tmweb.troopmaster.com/ScoutManagement/index";
 	private static Client client = ClientBuilder.newClient();
+	
+	private static ArrayList<Cookie> cookies = new ArrayList<Cookie>();
 		
     // Main function that starts the web app
     public static void main(String[] args) {
         Javalin app = Javalin.create()
             .port(getHerokuAssignedPort())
             .enableStaticFiles("/public")
-            .get("/refresh", (req, res) -> res.body(doLoginAttempt()));
+            .get("/login", (req, res) -> res.body(doGetLogin()))
+            .get("/scouts", (req, res) -> res.body(doGetScouts()));
             //.post("/", (req, res) -> res.body(addPlaceName(req.bodyAsClass(Place.class))))
             //.delete("/*", (req, res) -> res.body(removePlaceName(req.path().substring(1)) ? "deleted" : "not found"));
     }
@@ -34,18 +40,30 @@ public class Main {
         return 7000;
     }
     
-    private static String doLoginAttempt() {
-    	String output = "";
-		
+    private static String doGetLogin() {
     	Response response = getLogin(System.getenv("TM_UNIT"), System.getenv("TM_USER"), System.getenv("TM_PASS"));
+    	
+    	String output = "";
 		output += "Status: " + response.getStatus();
 		for (Entry<String, NewCookie> entry  : response.getCookies().entrySet()) {
 			output += entry.getKey() + "=" + entry.getValue();
+			cookies.add(entry.getValue());
 		}
 		
-		//Response response2 = getScouts();
+		return output;
+    }
+    
+    private static String doGetScouts() {
+    	Response response = getScouts();
+    	
+    	String output = "";
+		output += "Status: " + response.getStatus();
+		for (Entry<String, NewCookie> entry  : response.getCookies().entrySet()) {
+			output += entry.getKey() + "=" + entry.getValue();
+			cookies.add(entry.getValue());
+		}
 		
-		return output;//+ response2.getStatus() + response2.readEntity(String.class);
+		return output;
     }
     
 	public static Response getLogin(String unit, String user, String pass) {
@@ -57,7 +75,11 @@ public class Main {
 	}
 	
 	public static Response getScouts() {
-		return client.target(SCOUTS_URI).request(MediaType.TEXT_HTML).get();
+		Invocation.Builder builder = client.target(SCOUTS_URI).request(MediaType.TEXT_HTML);
+		for (Cookie cookie : cookies) {
+			builder.cookie(cookie);
+		}
+		return builder.get();
 	}
 
 
