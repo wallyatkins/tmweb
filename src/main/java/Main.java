@@ -56,12 +56,7 @@ public class Main {
     private static String doGetScouts() {
     	Response response = getScouts();
     	
-    	String output = "";
-		output += "Status: " + response.getStatus();
-		for (Entry<String, NewCookie> entry  : response.getCookies().entrySet()) {
-			output += entry.getKey() + "=" + entry.getValue();
-			cookies.add(entry.getValue());
-		}
+    	String output = response.readEntity(String.class);
 		
 		return output;
     }
