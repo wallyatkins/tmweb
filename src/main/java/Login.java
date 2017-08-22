@@ -59,6 +59,7 @@ public class Login {
 	// In the response of the ScoutManagement - find the DIV element with the ID of "grid"
 	
 	private static final String LOGIN_URI = "https://tmweb.troopmaster.com/Login/Login";
+	private static final String SCOUTS_URI = "https://tmweb.troopmaster.com/ScoutManagement/index";
 	private static Client client = ClientBuilder.newClient();
 	
 	public static Response getLogin(String unit, String user, String pass) {
@@ -67,6 +68,10 @@ public class Login {
 				.request(MediaType.APPLICATION_JSON)
 				.header("Cookie", "TroopMasterWebSiteID=" + unit + ";")
 				.post(Entity.entity("{\"UserID\":\"" + user + "\",\"Password\":\"" + pass + "\"}", MediaType.APPLICATION_JSON));
+	}
+	
+	public static Response getScouts() {
+		return client.target(SCOUTS_URI).request(MediaType.TEXT_HTML).get();
 	}
 
 }

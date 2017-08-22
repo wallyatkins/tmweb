@@ -7,8 +7,8 @@ import io.javalin.Javalin;
 
 public class Main {
 
-    // private static Map<String, Place> places = new HashMap<String, Place>();
-
+	private static String cookie = "";
+	
     // Main function that starts the web app
     public static void main(String[] args) {
         Javalin app = Javalin.create()
@@ -30,12 +30,17 @@ public class Main {
     
     private static String doLoginAttempt() {
     	String output = "";
-		Response response = Login.getLogin(System.getenv("TM_UNIT"), System.getenv("TM_USER"), System.getenv("TM_PASS"));
+    	cookie = "";
+		
+    	Response response = Login.getLogin(System.getenv("TM_UNIT"), System.getenv("TM_USER"), System.getenv("TM_PASS"));
 		output += "Status: " + response.getStatus();
 		for (Entry<String, NewCookie> entry  : response.getCookies().entrySet()) {
-			output += entry.getKey() + ": " + entry.getValue();
+			cookie += entry.getKey() + "=" + entry.getValue();
 		}
-		return output;
+		
+		Response response2 = Login.getScouts();
+		
+		return output + response2.getStatus() + response;
     }
 
     /* Commenting out the PlaceName stuff for now - DELETE later
