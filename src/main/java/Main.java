@@ -1,5 +1,9 @@
 import java.util.Map.Entry;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 
@@ -7,8 +11,10 @@ import io.javalin.Javalin;
 
 public class Main {
 
-	private static String cookie = "";
-	
+	private static final String LOGIN_URI = "https://tmweb.troopmaster.com/Login/Login";
+	private static final String SCOUTS_URI = "https://tmweb.troopmaster.com/ScoutManagement/index";
+	private static Client client = ClientBuilder.newClient();
+		
     // Main function that starts the web app
     public static void main(String[] args) {
         Javalin app = Javalin.create()
@@ -30,18 +36,30 @@ public class Main {
     
     private static String doLoginAttempt() {
     	String output = "";
-    	cookie = "";
 		
-    	Response response = Login.getLogin(System.getenv("TM_UNIT"), System.getenv("TM_USER"), System.getenv("TM_PASS"));
+    	Response response = getLogin(System.getenv("TM_UNIT"), System.getenv("TM_USER"), System.getenv("TM_PASS"));
 		output += "Status: " + response.getStatus();
 		for (Entry<String, NewCookie> entry  : response.getCookies().entrySet()) {
-			cookie += entry.getKey() + "=" + entry.getValue();
+			output += entry.getKey() + "=" + entry.getValue();
 		}
 		
-		Response response2 = Login.getScouts();
+		//Response response2 = getScouts();
 		
-		return output + response2.getStatus() + response2.readEntity(String.class);
+		return output;//+ response2.getStatus() + response2.readEntity(String.class);
     }
+    
+	public static Response getLogin(String unit, String user, String pass) {
+		return client
+				.target(LOGIN_URI)
+				.request(MediaType.APPLICATION_JSON)
+				.header("Cookie", "TroopMasterWebSiteID=" + unit + ";")
+				.post(Entity.entity("{\"UserID\":\"" + user + "\",\"Password\":\"" + pass + "\"}", MediaType.APPLICATION_JSON));
+	}
+	
+	public static Response getScouts() {
+		return client.target(SCOUTS_URI).request(MediaType.TEXT_HTML).get();
+	}
+
 
     /* Commenting out the PlaceName stuff for now - DELETE later
     
