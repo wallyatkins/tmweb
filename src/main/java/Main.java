@@ -1,3 +1,8 @@
+import java.util.Map.Entry;
+
+import javax.ws.rs.core.NewCookie;
+import javax.ws.rs.core.Response;
+
 import io.javalin.Javalin;
 
 public class Main {
@@ -8,8 +13,8 @@ public class Main {
     public static void main(String[] args) {
         Javalin app = Javalin.create()
             .port(getHerokuAssignedPort())
-            .enableStaticFiles("/public");
-            //.get("/*", (req, res) -> res.json(findPlaceNames(req.path().substring(1))))
+            .enableStaticFiles("/public")
+            .get("/refresh", (req, res) -> res.body(doLoginAttempt()));
             //.post("/", (req, res) -> res.body(addPlaceName(req.bodyAsClass(Place.class))))
             //.delete("/*", (req, res) -> res.body(removePlaceName(req.path().substring(1)) ? "deleted" : "not found"));
     }
@@ -21,6 +26,16 @@ public class Main {
             return Integer.parseInt(processBuilder.environment().get("PORT"));
         }
         return 7000;
+    }
+    
+    private static String doLoginAttempt() {
+    	String output = "";
+		Response response = Login.getLogin(System.getenv("TM_UNIT"), System.getenv("TM_USER"), System.getenv("TM_PASS"));
+		output += "Status: " + response.getStatus();
+		for (Entry<String, NewCookie> entry  : response.getCookies().entrySet()) {
+			output += entry.getKey() + ": " + entry.getValue();
+		}
+		return output;
     }
 
     /* Commenting out the PlaceName stuff for now - DELETE later

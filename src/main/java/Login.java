@@ -1,10 +1,7 @@
-import java.util.Map.Entry;
-
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 
 public class Login {
@@ -63,21 +60,12 @@ public class Login {
 	
 	private static final String LOGIN_URI = "https://tmweb.troopmaster.com/Login/Login";
 	private static Client client = ClientBuilder.newClient();
-			
-	public static void main(String[] args) {
-		
-		Response response = getLogin("username", "password");
-		System.out.println("Status: " + response.getStatus());
-		for (Entry<String, NewCookie> entry  : response.getCookies().entrySet()) {
-			System.out.println(entry.getKey() + ": " + entry.getValue());
-		}
-	}
 	
-	public static Response getLogin(String user, String pass) {
+	public static Response getLogin(String unit, String user, String pass) {
 		return client
 				.target(LOGIN_URI)
 				.request(MediaType.APPLICATION_JSON)
-				.header("Cookie", "TroopMasterWebSiteID=202574;")
+				.header("Cookie", "TroopMasterWebSiteID=" + unit + ";")
 				.post(Entity.entity("{\"UserID\":\"" + user + "\",\"Password\":\"" + pass + "\"}", MediaType.APPLICATION_JSON));
 	}
 
