@@ -3,7 +3,7 @@
   "description": "TroopMaster Web 2.0 Data Interface",
   "repository": "https://github.com/dfu23/tmweb",
   "logo": "https://avatars2.githubusercontent.com/u/135756?v=4&s=40",
-  "keywords": ["java", "troopmaster"]
+  "keywords": ["java", "troopmaster"],
   "env": {
   	"TM_UNIT": "12345",
   	"TM_USER": "First.Last",
