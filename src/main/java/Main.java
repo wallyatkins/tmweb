@@ -40,7 +40,7 @@ public class Main {
 		
 		Response response2 = Login.getScouts();
 		
-		return output + response2.getStatus() + response;
+		return output + response2.getStatus() + response2.readEntity(String.class);
     }
 
     /* Commenting out the PlaceName stuff for now - DELETE later
