@@ -7,4 +7,4 @@
  * Easily deployable (Heroku deploy button)
  * Easily configurable for each troop
  
-More to come ...
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/wallyatkins/tmweb)

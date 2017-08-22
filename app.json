@@ -1,0 +1,7 @@
+{
+  "name": "tmweb",
+  "description": "TroopMaster Web 2.0 Data Interface",
+  "repository": "https://github.com/dfu23/tmweb",
+  "logo": "https://avatars2.githubusercontent.com/u/135756?v=4&s=40",
+  "keywords": ["java", "troopmaster"]
+}
