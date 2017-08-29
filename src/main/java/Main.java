@@ -4,7 +4,6 @@ import java.util.Map.Entry;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
@@ -19,6 +18,8 @@ public class Main {
 	private static Client client = ClientBuilder.newClient();
 	
 	private static ArrayList<Cookie> cookies = new ArrayList<Cookie>();
+	
+	private static String cookie = "";
 		
     // Main function that starts the web app
     public static void main(String[] args) {
@@ -53,6 +54,8 @@ public class Main {
 		return output;
     }
     
+    // I was forgetting to add the TroopMasterWebSiteID cookie - that's why I wasn't getting back the desired data
+    // Now I need to process the HTML that comes back with JSoup or something ...
     private static String doGetScouts() {
     	Response response = getScouts();
     	
@@ -70,58 +73,13 @@ public class Main {
 	}
 	
 	public static Response getScouts() {
-		Invocation.Builder builder = client.target(SCOUTS_URI).request(MediaType.TEXT_HTML);
-		for (Cookie cookie : cookies) {
-			builder.cookie(cookie);
-		}
-		return builder.get();
+		System.out.println(cookie);
+		return client
+				.target(SCOUTS_URI)
+				.request(MediaType.TEXT_HTML, MediaType.APPLICATION_XHTML_XML, MediaType.APPLICATION_XML)
+				.header("Referrer", "https://tmweb.troopmaster.com/ScoutManagement/index")
+				.header("Cookie", cookie)
+				.get();
 	}
 
-
-    /* Commenting out the PlaceName stuff for now - DELETE later
-    
-    // Search through the place names and return a list of matches
-    private static List<Place> findPlaceNames(String query) {
-        List<Place> matches = new ArrayList<Place>();
-        for (Entry<String, Place> entry : places.entrySet()) {
-            if (entry.getKey().toLowerCase().contains(query.toLowerCase())) {
-                matches.add(entry.getValue());
-            }
-        }
-        return matches;
-    }
-
-    // Add a given place to the data set
-    private static String addPlaceName(Place place) {
-        places.put(place.name, place);
-        return "added";
-    }
-
-    // Deletes a entry from the list of places if it exists
-    private static boolean removePlaceName(String key) {
-        if (places.remove(key) != null) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    // Simple data structure to hold place information
-    private static class Place {
-        public String name;
-        public Double lat;
-        public Double lon;
-
-        public Place() {
-
-        }
-
-        public Place(String name, Double lat, Double lon) {
-            this.name = name;
-            this.lat = lat;
-            this.lon = lon;
-        }
-    }
-    
-    */
 }
