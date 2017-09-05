@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -30,6 +32,7 @@ public class Main {
 	private static String LOGIN_URI = "https://tmweb.troopmaster.com/Login/Login";
 	private static String SCOUTS_URI = "https://tmweb.troopmaster.com/ScoutManagement/index";
 	private static String ADULTS_URI = "https://tmweb.troopmaster.com/AdultManagement/index";
+	private static String ACTIVITIES_URI = "https://tmweb.troopmaster.com/ActivityManagement/index";
 
 	private static Client client = null;
 
@@ -37,6 +40,7 @@ public class Main {
 	
 	private static Map<String, Scout> scouts = new HashMap<String, Scout>();
 	private static Map<String, Adult> adults = new HashMap<String, Adult>();
+	private static Map<String, Activity> activities = new HashMap<String, Activity>();
 
 	public static void main(String[] args) {
 		initLocalEnvironment();
@@ -51,9 +55,11 @@ public class Main {
 		performLogin();
 		parseScouts();
 		parseAdults();
+		parseActivities();
 		
 		printScouts();
 		printLeaders();
+		printCamping();
 	}
 
 	private static void initHerokuEnvironment() {
@@ -125,6 +131,24 @@ public class Main {
 			adults.put(adult.getId(), adult);
 		}
 	}
+	
+	private static void parseActivities() {
+		Response response = activities();
+		Document html = Jsoup.parse(response.readEntity(String.class));
+		Elements rows = html.select("#gridActivity tbody tr");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy h:mm:ss a");
+		for (Element tr : rows) {
+			Activity activity = new Activity();
+			activity.setLevel(tr.child(0).text());
+			activity.setType(tr.child(1).text());
+			activity.setTitle(tr.child(2).text());
+			activity.setStart(LocalDate.parse(tr.child(3).text(), formatter));
+			activity.setEnd(LocalDate.parse(tr.child(4).text(), formatter));
+			activity.setLocation(tr.child(5).text());
+			activity.setId(tr.child(7).text());
+			activities.put(activity.getId(), activity);
+		}		
+	}
 
 	public static Response login(String unit, String user, String pass) {
 		return client
@@ -150,6 +174,14 @@ public class Main {
 				.get();		
 	}
 	
+	public static Response activities() {
+		return client
+				.target(ACTIVITIES_URI)
+				.request(MediaType.TEXT_HTML, MediaType.APPLICATION_XHTML_XML, MediaType.APPLICATION_XML)
+				.header("Cookie", getCookies())
+				.get();
+	}
+	
 	public static String getCookies() {
 		String output = "";
 		for (String key : cookies.keySet()) {
@@ -172,6 +204,17 @@ public class Main {
 				System.out.println(adult.getFirstName() + " " + adult.getLastName() + " [" + adult.getPosition() + "]");
 			}
 		}
+	}
+	
+	public static void printCamping() {
+		for (String key : activities.keySet()) {
+			Activity activity = activities.get(key);
+			if (activity.getType().equals("Camping")) {
+				System.out.println(activity.getTitle() + " [" + activity.getType() + "]");
+				System.out.println(activity.getStart() + " - " + activity.getEnd());
+				System.out.println(activity.getLocation());
+			}
+		}		
 	}
 	
 }
