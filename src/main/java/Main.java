@@ -43,23 +43,23 @@ public class Main {
 	private static Map<String, Activity> activities = new HashMap<String, Activity>();
 
 	public static void main(String[] args) {
-		initLocalEnvironment();
-		//initHerokuEnvironment();
+		//initLocalEnvironment();
+		initHerokuEnvironment();
 
 		Logger logger = Logger.getLogger(Main.class.getName());
 		LoggingFeature feature = new LoggingFeature(logger, Level.INFO, null, null);
 		client = ClientBuilder.newBuilder().register(feature).build();
 
-		// startJavalin();
+		startJavalin();
 		
 		performLogin();
 		parseScouts();
 		parseAdults();
 		parseActivities();
 		
-		printScouts();
-		printLeaders();
-		printCamping();
+		//printScouts();
+		//printLeaders();
+		//printCamping();
 	}
 
 	private static void initHerokuEnvironment() {
