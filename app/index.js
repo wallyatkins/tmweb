@@ -29,8 +29,7 @@ class App extends React.Component{
         startAccessor='start'
         endAccessor='end'
         views={allViews}
-        defaultDate={new Date(2015, 3, 1)}
-        style={{height: 800}}
+        style={{height: 1000}}
       />
     )
   }

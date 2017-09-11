@@ -8,13 +8,14 @@ export function getEvents (callback) {
     .end((err, resp) => {
       if (!err) {
         const events = []
-        JSON.parse(resp.text).items.map((event) => {
+        let items = JSON.parse(resp.text)
+        for (var i = 0; i < items.length; i++) {
           events.push({
-            start: event.start.date || event.start.dateTime,
-            end: event.end.date || event.end.dateTime,
-            title: event.summary
+            start: items[i].start,
+            end: items[i].end,
+            title: items[i].title
           })
-        })
+        }
         callback(events)
       }
     })

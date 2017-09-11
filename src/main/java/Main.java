@@ -1,4 +1,4 @@
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -131,8 +131,8 @@ public class Main {
 			activity.setLevel(tr.child(0).text());
 			activity.setType(tr.child(1).text());
 			activity.setTitle(tr.child(2).text());
-			activity.setStart(LocalDate.parse(tr.child(3).text(), formatter));
-			activity.setEnd(LocalDate.parse(tr.child(4).text(), formatter));
+			activity.setStart(LocalDateTime.parse(tr.child(3).text(), formatter));
+			activity.setEnd(LocalDateTime.parse(tr.child(4).text(), formatter));
 			activity.setLocation(tr.child(5).text());
 			activity.setId(tr.child(7).text());
 			activities.put(activity.getId(), activity);

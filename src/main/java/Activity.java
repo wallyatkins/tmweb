@@ -1,13 +1,13 @@
 import java.time.format.DateTimeFormatter;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Activity {
 
 	private String level;
 	private String type;
 	private String title;
-	private LocalDate start;
-	private LocalDate end;
+	private LocalDateTime start;
+	private LocalDateTime end;
 	private String location;
 	private String id;
 	
@@ -30,15 +30,15 @@ public class Activity {
 		this.title = title;
 	}
 	public String getStart() {
-		return start.format(DateTimeFormatter.ofPattern("dd LLLL yyyy"));
+		return start.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 	}
-	public void setStart(LocalDate start) {
+	public void setStart(LocalDateTime start) {
 		this.start = start;
 	}
 	public String getEnd() {
-		return end.format(DateTimeFormatter.ofPattern("dd LLLL yyyy"));
+		return end.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 	}
-	public void setEnd(LocalDate end) {
+	public void setEnd(LocalDateTime end) {
 		this.end = end;
 	}
 	public String getLocation() {
