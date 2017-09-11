@@ -25,7 +25,7 @@ import io.javalin.Javalin;
 
 public class Main {
 
-	private static int PORT = 7000;
+	private static int PORT = 8080;
 
 	private static String TM_UNIT = "";
 	private static String TM_USER = "";
@@ -45,8 +45,7 @@ public class Main {
 	private static Map<String, Activity> activities = new HashMap<String, Activity>();
 
 	public static void main(String[] args) {
-		//initLocalEnvironment();
-		initHerokuEnvironment();
+		initEnvironment();
 
 		Logger logger = Logger.getLogger(Main.class.getName());
 		LoggingFeature feature = new LoggingFeature(logger, Level.INFO, null, null);
@@ -59,7 +58,7 @@ public class Main {
 				.get("/events", (req, res) -> res.json(getEvents()));
 	}
 
-	private static void initHerokuEnvironment() {
+	private static void initEnvironment() {
 		ProcessBuilder processBuilder = new ProcessBuilder();
 		if (processBuilder.environment().get("PORT") != null) {
 			PORT = Integer.parseInt(processBuilder.environment().get("PORT"));
@@ -67,13 +66,6 @@ public class Main {
 		TM_UNIT = System.getenv("TM_UNIT");
 		TM_USER = System.getenv("TM_USER");
 		TM_PASS = System.getenv("TM_PASS");
-		cookies.put("TroopMasterWebSiteID", TM_UNIT);
-	}
-
-	private static void initLocalEnvironment() {
-		TM_UNIT = "202574";
-		TM_USER = "";
-		TM_PASS = "";
 		cookies.put("TroopMasterWebSiteID", TM_UNIT);
 	}
 	
