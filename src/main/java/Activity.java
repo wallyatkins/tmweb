@@ -1,3 +1,4 @@
+import java.time.format.DateTimeFormatter;
 import java.time.LocalDate;
 
 public class Activity {
@@ -28,14 +29,14 @@ public class Activity {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	public LocalDate getStart() {
-		return start;
+	public String getStart() {
+		return start.format(DateTimeFormatter.ofPattern("dd LLLL yyyy"));
 	}
 	public void setStart(LocalDate start) {
 		this.start = start;
 	}
-	public LocalDate getEnd() {
-		return end;
+	public String getEnd() {
+		return end.format(DateTimeFormatter.ofPattern("dd LLLL yyyy"));
 	}
 	public void setEnd(LocalDate end) {
 		this.end = end;
