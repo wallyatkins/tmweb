@@ -1,8 +1,10 @@
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,16 +52,11 @@ public class Main {
 		LoggingFeature feature = new LoggingFeature(logger, Level.INFO, null, null);
 		client = ClientBuilder.newBuilder().register(feature).build();
 
-		startJavalin();
-		
-		performLogin();
-		parseScouts();
-		parseAdults();
-		parseActivities();
-		
-		//printScouts();
-		//printLeaders();
-		//printCamping();
+		Javalin app = Javalin.create()
+				.port(PORT)
+				.enableStaticFiles("/public")
+				.get("/init", (req, res) -> res.body(initializeData()))
+				.get("/events", (req, res) -> res.json(getEvents()));
 	}
 
 	private static void initHerokuEnvironment() {
@@ -79,13 +76,13 @@ public class Main {
 		TM_PASS = "";
 		cookies.put("TroopMasterWebSiteID", TM_UNIT);
 	}
-
-	private static void startJavalin() {
-		Javalin app = Javalin.create()
-				.port(PORT)
-				.enableStaticFiles("/public");
-				//.get("/login", (req, res) -> res.body("Status: "  + performLogin()))
-				//.get("/scouts", (req, res) -> res.body(parseScouts()));
+	
+	private static String initializeData() {
+		performLogin();
+		parseScouts();
+		parseAdults();
+		parseActivities();
+		return "done";
 	}
 
 	private static int performLogin() {
@@ -216,5 +213,9 @@ public class Main {
 			}
 		}		
 	}
-	
+
+	public static List<Activity> getEvents() {
+		return new ArrayList<Activity>(activities.values());
+	}
+
 }
