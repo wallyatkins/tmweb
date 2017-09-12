@@ -1,38 +1,8 @@
-import React from 'react'
-import BigCalendar from 'react-big-calendar'
-import 'react-big-calendar/lib/css/react-big-calendar.css'
-import moment from 'moment'
-import { render } from 'react-dom'
-import { getEvents } from './tmcal'
+import React from 'react';
+import { render } from 'react-dom';
+import injectTapEventPlugin from 'react-tap-event-plugin';
+import Main from './Main';
 
-let allViews = Object.keys(BigCalendar.views).map(k => BigCalendar.views[k])
+injectTapEventPlugin();
 
-BigCalendar.momentLocalizer(moment)
-
-class App extends React.Component{
-  constructor () {
-    super()
-    this.state = {
-      events: []
-    }
-  }
-  componentDidMount () {
-    getEvents((events) => {
-      this.setState({events})
-    })
-  }
-  render(){
-    return (
-      <BigCalendar
-        {...this.props}
-        events={this.state.events}
-        startAccessor='start'
-        endAccessor='end'
-        views={allViews}
-        style={{height: 1000}}
-      />
-    )
-  }
-}
-
-render(<App/>, document.getElementById('root'))
+render(<Main />, document.getElementById('app'));
