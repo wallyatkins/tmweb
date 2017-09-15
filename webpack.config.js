@@ -15,6 +15,12 @@ module.exports = {
     filename: 'bundle.js'
   },
 
+  devServer: {
+    contentBase: "./src/main/resources/public",
+    compress: true,
+    port: 9000
+  },
+
   module: {
     loaders: [
       {
