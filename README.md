@@ -1,5 +1,7 @@
 # tmweb - TroopMaster Web 2.0 Data Interface
 
+[![Build Status](https://travis-ci.org/wallyatkins/tmweb.svg?branch=master)](https://travis-ci.org/wallyatkins/tmweb)
+
 ### Concepts
 
  * Authenticate seamlessly with TroopMaster web
